@@ -20,6 +20,7 @@ h1 {
 
 h5 {
   text-align: right;
+  margin: 15px;
 }
 
 .quote-card {
@@ -37,10 +38,6 @@ h5 {
 
 .quote {
   font-size: 18px;
-}
-
-.quote, .author {
-  display: none;
 }
 
 .new-quote,

@@ -1,31 +1,46 @@
-$(document).ready(function() {
-  $.ajaxSetup({
-    cache: false
-  });
-  
-  function newQuote() {
-    $(".quote, .author").fadeOut("fast");    
-    $.getJSON("//quotesondesign.com/wp-json/posts?filter[orderby]=rand&filter[posts_per_page]=1", function(quote) {
-      var quoteText = quote[0].content.slice(3, -5);
-      var quoteAuthor = quote[0].title;
-      if (quoteText.length > 110) {
-        newQuote();
+"use strict";
+
+function newQuote() {
+  const quoteDiv = document.querySelector(".quote");
+  const authorH5 = document.querySelector(".author");
+
+  quoteDiv.innerHTML = "Loading...";
+  authorH5.innerHTML = "";
+
+  const quotes = new XMLHttpRequest();
+  quotes.onreadystatechange = function() {
+    if (quotes.readyState === 4) {
+      if (quotes.status === 200) {
+        const quote = JSON.parse(quotes.responseText);
+        const quoteText = quote[0].content.slice(3, -5);
+        const quoteAuthor = quote[0].title;
+
+        if (quoteText.length > 110) {
+          newQuote();
+        } else {
+          quoteDiv.innerHTML = quoteText;
+          authorH5.innerHTML = " &#8212; " + quoteAuthor;
+        }
+
       } else {
-        $(".quote").html(quoteText);
-        $(".author").html("— " + quoteAuthor);
-        $(".quote, .author").delay(300).fadeIn(300);
+        alert(quotes.status);
       }
-    });
-  }
-  
-  newQuote();
-  
-  $("#new").click(function() {
-    newQuote();
-  });
-  
-  $(".share").on("click", function(e) {
-    e.preventDefault();
-    window.open("https://twitter.com/intent/tweet?text=" + $(".quote").text() + $(".author").text() + "&hashtags=designquote");
-  });
+    }
+  };
+  const bustCache = '?' + new Date().getTime();
+  const quoteUrl = "//quotesondesign.com/wp-json/posts?filter[orderby]=rand&filter[posts_per_page]=1";
+  quotes.open("GET", quoteUrl + bustCache, true);
+  quotes.send();
+}
+
+newQuote();
+
+const newQuoteButton = document.getElementById("new");
+const shareButton = document.querySelector(".share");
+
+newQuoteButton.addEventListener("click", newQuote);
+
+shareButton.addEventListener("click", e => {
+  e.preventDefault();
+  window.open("https://twitter.com/intent/tweet?text=" + document.querySelector(".quote").textContent + " — " + document.querySelector(".author").textContent.slice(3) + "&hashtags=quotesondesign");
 });
