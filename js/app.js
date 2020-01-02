@@ -27,8 +27,8 @@ function newQuote() {
       }
     }
   };
-  const bustCache = '?' + new Date().getTime();
-  const quoteUrl = "//quotesondesign.com/wp-json/posts?filter[orderby]=rand&filter[posts_per_page]=1";
+  const bustCache = '&now=' + new Date().getTime();
+  const quoteUrl = "https://quotesondesign.com/wp-json/wp/v2/posts/?orderby=rand&per_page=1";
   quotes.open("GET", quoteUrl + bustCache, true);
   quotes.send();
 }
