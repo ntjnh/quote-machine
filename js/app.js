@@ -11,9 +11,10 @@ function newQuote() {
   quotes.onreadystatechange = function() {
     if (quotes.readyState === 4) {
       if (quotes.status === 200) {
-        const quote = JSON.parse(quotes.responseText);
-        const quoteText = quote[0].content.slice(3, -5);
-        const quoteAuthor = quote[0].title;
+        const quoteData = JSON.parse(quotes.responseText);
+        const quote = quoteData[0].content.rendered;
+        const quoteText = quote.slice(3, -5);
+        const quoteAuthor = quoteData[0].title.rendered;
 
         if (quoteText.length > 110) {
           newQuote();
